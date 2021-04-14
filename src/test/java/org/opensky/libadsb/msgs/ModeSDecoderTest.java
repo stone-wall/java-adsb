@@ -2,6 +2,7 @@ package org.opensky.libadsb.msgs;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 import org.opensky.libadsb.ModeSDecoder;
 import org.opensky.libadsb.exceptions.BadFormatException;
 import org.opensky.libadsb.exceptions.UnspecifiedFormatError;
@@ -56,6 +57,15 @@ public class ModeSDecoderTest {
 		TargetStateAndStatusMsg tss = (TargetStateAndStatusMsg) reply;
 
 		assertFalse(tss.hasSelectedHeadingInfo());
+	}
+
+	@Test
+	public void testDecodingFromInvalidHexThrowsBadFormat() {
+		final String hex = "84b5c2a753b22b4290439abe9cd8h";
+		
+		ThrowingRunnable conversionTest = () -> decoder.decode(hex);
+		
+		assertThrows(BadFormatException.class, conversionTest);
 	}
 
 }

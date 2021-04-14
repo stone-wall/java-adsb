@@ -17,6 +17,8 @@ package org.opensky.libadsb;
  *  along with org.opensky.libadsb.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.opensky.libadsb.exceptions.BadFormatException;
+
 /**
  * Some useful functions when working with libadsb. Mostly we need these
  * functions since the library often works with arrays of bytes which are
@@ -64,8 +66,11 @@ public class tools {
 	 * @param str the hex string to convert
 	 * @return the byte array
 	 */
-	public static byte[] hexStringToByteArray(String str) {
+	public static byte[] hexStringToByteArray(String str) throws BadFormatException {
 		int len = str.length();
+		if (len % 2 != 0) {
+			throw new BadFormatException("Raw message has an invalid length of " + len);
+		}
 		byte[] data = new byte[len / 2];
 		for (int i = 0; i < len; i += 2) {
 			data[i / 2] = (byte) ((Character.digit(str.charAt(i), 16) << 4)
