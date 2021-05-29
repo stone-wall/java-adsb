@@ -33,6 +33,7 @@ public class AllCallReply extends ModeSReply implements Serializable {
 	private byte capabilities;
 	private byte[] parity_interrogator; // 3 bytes
 	private byte code_label;
+	private FlightStatus flightStatus = FlightStatus.UNKNOWN;
 
 	/** protected no-arg constructor e.g. for serialization with Kryo **/
 	protected AllCallReply() { }
@@ -69,6 +70,18 @@ public class AllCallReply extends ModeSReply implements Serializable {
 		}
 
 		capabilities = getFirstField();
+
+		switch (capabilities) {
+			case 4:
+				this.flightStatus = FlightStatus.ON_GROUND;
+				break;
+			case 5:
+				this.flightStatus = FlightStatus.AIRBORNE;
+				break;
+			default:
+				this.flightStatus = FlightStatus.UNKNOWN;
+				break;
+		}
 
 		// extract interrogator ID
 		this.parity_interrogator = tools.xor(calcParity(), getParity());

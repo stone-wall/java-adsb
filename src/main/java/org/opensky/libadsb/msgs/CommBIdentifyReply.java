@@ -35,6 +35,7 @@ public class CommBIdentifyReply extends ModeSReply implements Serializable {
 	private byte utility_msg;
 	private short identity;
 	private byte[] message;
+	private FlightStatus flightStatus = FlightStatus.UNKNOWN;
 
 	/** protected no-arg constructor e.g. for serialization with Kryo **/
 	protected CommBIdentifyReply() { }
@@ -75,6 +76,17 @@ public class CommBIdentifyReply extends ModeSReply implements Serializable {
 		downlink_request = (byte) ((payload[0]>>>3) & 0x1F);
 		utility_msg = (byte) ((payload[0]&0x7)<<3 | (payload[1]>>>5)&0x7);
 		identity = (short) ((payload[1]<<8 | (payload[2]&0xFF))&0x1FFF);
+
+		switch (flight_status) {
+			case 1:
+			case 3:
+				this.flightStatus = FlightStatus.ON_GROUND;
+				break;
+			case 0:
+			case 2:
+				this.flightStatus = FlightStatus.AIRBORNE;
+				break;
+		}
 
 		// extract Comm-B message
 		message = new byte[7];

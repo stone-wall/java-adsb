@@ -1,10 +1,19 @@
 package org.opensky.libadsb.msgs;
 
+import org.apache.commons.lang3.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensky.libadsb.ModeSDecoder;
 import org.opensky.libadsb.exceptions.BadFormatException;
 import org.opensky.libadsb.exceptions.UnspecifiedFormatError;
+
+import org.opensky.libadsb.tools;
+
+import java.math.BigDecimal;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.BitSet;
 
 import static org.junit.Assert.*;
 
@@ -56,6 +65,16 @@ public class ModeSDecoderTest {
 		TargetStateAndStatusMsg tss = (TargetStateAndStatusMsg) reply;
 
 		assertFalse(tss.hasSelectedHeadingInfo());
+	}
+
+	@Test
+	public void test_string_to_bytes() {
+		final String testString = "8da3e5fa58bf017431ff794a1a44";
+		final String shortTestString = "2c7b15a7841e14";
+
+		System.out.println(Arrays.toString(tools.hexStringToByteArray(shortTestString)));
+
+		assertNotNull(tools.hexStringToByteArray(shortTestString));
 	}
 
 }
