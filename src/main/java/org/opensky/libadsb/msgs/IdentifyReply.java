@@ -33,7 +33,7 @@ public class IdentifyReply extends ModeSReply implements Serializable {
 	private byte downlink_request;
 	private byte utility_msg;
 	private short identity;
-	private FlightStatus flightStatus = FlightStatus.UNKNOWN;
+	private transient FlightStatus flightStatus = FlightStatus.UNKNOWN;
 
 	/** protected no-arg constructor e.g. for serialization with Kryo **/
 	protected IdentifyReply() { }
@@ -126,7 +126,10 @@ public class IdentifyReply extends ModeSReply implements Serializable {
 	 * @return whether flight status indicates that aircraft is on the ground.
 	 * For flight status &gt;= 4, this flag is unknown. Thus, a return value of false
 	 * does not indicate that the aircraft is airborne! See also {@link #isAirborne()}.
+	 *
+	 * @deprecated See {@link #flightStatus()} to get the aircraft's flight status
 	 */
+	@Deprecated
 	public boolean isOnGround() {
 		return flight_status==1 || flight_status==3;
 	}
@@ -135,9 +138,22 @@ public class IdentifyReply extends ModeSReply implements Serializable {
 	 * @return whether flight status indicates that aircraft is airborne.
 	 * For flight status &gt;= 4, this flag is unknown. Thus, a return value of false
 	 * does not indicate that the aircraft is on ground! See also {@link #isOnGround()} .
+	 *
+	 * @deprecated See {@link #flightStatus()} to get the aircraft's flight status
 	 */
+	@Deprecated
 	public boolean isAirborne() {
 		return flight_status == 0 || flight_status == 2;
+	}
+
+	/**
+	 *
+	 * @return returns FlightStatus.ON_GROUND when aircraft is
+	 * 	on the ground, FlightStatus.AIRBORNE when aircraft is airborne, and
+	 * 	FlightStatus.UNKNOWN if the status is not known.
+	 */
+	public FlightStatus flightStatus() {
+		return this.flightStatus;
 	}
 
 	/**

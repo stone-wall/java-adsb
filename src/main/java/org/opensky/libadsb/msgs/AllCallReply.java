@@ -33,7 +33,7 @@ public class AllCallReply extends ModeSReply implements Serializable {
 	private byte capabilities;
 	private byte[] parity_interrogator; // 3 bytes
 	private byte code_label;
-	private FlightStatus flightStatus = FlightStatus.UNKNOWN;
+	private transient FlightStatus flightStatus = FlightStatus.UNKNOWN;
 
 	/** protected no-arg constructor e.g. for serialization with Kryo **/
 	protected AllCallReply() { }
@@ -100,7 +100,10 @@ public class AllCallReply extends ModeSReply implements Serializable {
 	 * @return whether capabilities indicate that aircraft is on the ground.
 	 * Note that returning false does not indicate that the aircraft is airborne as status might be unknown!
 	 * See also {@link #isAirborne()}.
+	 *
+	 * @deprecated See {@link #flightStatus()} to get the aircraft's flight status
 	 */
+	@Deprecated
 	public boolean isOnGround() {
 		return capabilities == 4;
 	}
@@ -109,11 +112,23 @@ public class AllCallReply extends ModeSReply implements Serializable {
 	 * @return whether capabilities indicate that aircraft is airborne.
 	 * Note that returning false does not indicate that the aircraft is on ground as status might be unknown!
 	 * See also {@link #isOnGround()}.
+	 *
+	 * @deprecated See {@link #flightStatus()} to get the aircraft's flight status
 	 */
+	@Deprecated
 	public boolean isAirborne() {
 		return capabilities == 5;
 	}
 
+	/**
+	 *
+	 * @return returns FlightStatus.ON_GROUND when aircraft is
+	 * 	on the ground, FlightStatus.AIRBORNE when aircraft is airborne, and
+	 * 	FlightStatus.UNKNOWN if the status is not known.
+	 */
+	public FlightStatus flightStatus() {
+		return this.flightStatus;
+	}
 
 	/**
 	 * Some receivers already subtract the crc checksum
